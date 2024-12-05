@@ -49,7 +49,7 @@ jobs:
           coverage report --fail-under=50  # Перевірка покриття, ліміт 50%
           coverage html
       - name: Upload test report
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3  # Оновлення до версії v3
         with:
           name: test-report
           path: htmlcov/
