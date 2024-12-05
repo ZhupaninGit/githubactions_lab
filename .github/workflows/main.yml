@@ -12,7 +12,7 @@ on:
 
 jobs:
   lint:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -30,7 +30,7 @@ jobs:
           flake8 .
 
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -48,9 +48,9 @@ jobs:
           coverage run -m pytest
           coverage report --fail-under=50 > coverage.txt
           coverage html
-      - name: Save coverage percentage
+      - name: Extract coverage percentage from HTML
         run: |
-          grep "TOTAL" coverage.txt | awk '{print $4}' > coverage_percentage.txt
+          grep -oP '(?<=<span class="pc_cov">)[0-9]+(?=%</span>)' htmlcov/index.html > coverage_percentage.txt
       - name: Upload test report
         uses: actions/upload-artifact@v4
         with:
@@ -58,7 +58,7 @@ jobs:
           path: htmlcov/
 
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     if: github.ref == 'refs/heads/main'
     steps:
       - name: Checkout code
@@ -75,9 +75,10 @@ jobs:
         run: |
           mkdir build
           echo "Build completed." > build/build.txt
-          echo "Test coverage: $(cat coverage_percentage.txt)" >> build/build.txt
+          echo "Test coverage: $(cat coverage_percentage.txt)%" >> build/build.txt
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
           name: build-artifact
           path: build/
+
