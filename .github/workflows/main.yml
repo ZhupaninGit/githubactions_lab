@@ -46,9 +46,13 @@ jobs:
         run: |
           pip install pytest coverage
           coverage run -m pytest
-          coverage report
+          coverage report --fail-under=50  # Перевірка покриття, ліміт 50%
           coverage html
-          coverage check --fail-under=50  # Ліміт 50%
+      - name: Upload test report
+        uses: actions/upload-artifact@v2
+        with:
+          name: test-report
+          path: htmlcov/
 
 
   build:
