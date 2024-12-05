@@ -1,7 +1,6 @@
 name: Flask CI
 
 on:
-on:
   push:
     branches:
       - main
